@@ -1,0 +1,28 @@
+name: Commit Every 3 Days
+
+on:
+  schedule:
+    - cron: '0 0 */3 * *'  # setiap 3 hari jam 00:00 UTC
+  workflow_dispatch:  # bisa juga dijalankan manual
+
+jobs:
+  commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update log file
+        run: |
+          echo "$(date) - Komit otomatis untuk jaga konsistensi" >> log.txt
+
+      - name: Setup Git
+        run: |
+          git config user.name "auto-committer"
+          git config user.email "bot@example.com"
+
+      - name: Commit dan Push
+        run: |
+          git add log.txt
+          git commit -m "Auto commit: $(date)"
+          git push https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/skimatt/GreenWFL.git
